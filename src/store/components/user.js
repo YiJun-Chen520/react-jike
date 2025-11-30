@@ -1,6 +1,6 @@
 import { request } from "@/utils";
 import { createSlice } from "@reduxjs/toolkit";
-import { setToken as _setToken, getToken } from '@/utils/token'
+import { setToken as _setToken, getToken, removeToken } from '@/utils/token'
 
 const userSlice = createSlice({
   name: 'user',
@@ -17,11 +17,17 @@ const userSlice = createSlice({
 
     setUserInfo(state, action) {
       state.userInfo = action.payload
+    },
+
+    clearUserInfo(state) {
+      state.token = ''
+      state.userInfo = {}
+      removeToken()
     }
   }
 })
 
-const { setToken, setUserInfo } = userSlice.actions
+const { setToken, setUserInfo, clearUserInfo } = userSlice.actions
 
 // 编写异步代码
 function fetchLogin(userForm) {
@@ -39,7 +45,7 @@ function fetchUserInfo() {
   }
 }
 
-export { setToken, fetchLogin, fetchUserInfo }
+export { setToken, clearUserInfo, fetchLogin, fetchUserInfo }
 
 const userReducer = userSlice.reducer
 
