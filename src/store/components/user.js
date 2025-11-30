@@ -1,6 +1,7 @@
 import { request } from "@/utils";
 import { createSlice } from "@reduxjs/toolkit";
 import { setToken as _setToken, getToken, removeToken } from '@/utils/token'
+import { getProfileAPI, loginAPI } from "@/apis/user";
 
 const userSlice = createSlice({
   name: 'user',
@@ -32,7 +33,7 @@ const { setToken, setUserInfo, clearUserInfo } = userSlice.actions
 // 编写异步代码
 function fetchLogin(userForm) {
   return async (dispatch) => {
-    const res = await request.post('/authorizations', userForm)
+    const res = await loginAPI(userForm)
     dispatch(setToken(res.data.token))
   }
 }
@@ -40,7 +41,7 @@ function fetchLogin(userForm) {
 // 获取用户信息异步代码
 function fetchUserInfo() {
   return async (dispatch) => {
-    const res = await request.get('user/profile')
+    const res = await getProfileAPI()
     dispatch(setUserInfo(res.data))
   }
 }
