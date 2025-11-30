@@ -1,15 +1,17 @@
 import { request } from "@/utils";
 import { createSlice } from "@reduxjs/toolkit";
+import { setToken as _setToken, getToken } from '@/utils/token'
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    token: ''
+    token: getToken() || ''
   },
   reducers: {
     setToken(state, action) {
       state.token = action.payload
-
+      // 实现token持久化
+      _setToken(action.payload)
     }
   }
 })
