@@ -9,6 +9,8 @@ export function AuthRoute({ children }) {
   if (token) {
     return <>{children}</>
   } else {
+    // 因为React 组件的 return 需要返回 JSX ，
+    // 而 Navigate 是 函数 不是 JSX，所以只能使用 <Navigate />
     return <Navigate to="/login" replace />
   }
 }
