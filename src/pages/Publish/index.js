@@ -12,6 +12,8 @@ import {
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import './index.scss'
+import { useEffect, useState } from 'react'
+import { getChannelListAPI, createArticleAPI } from '@/apis/publish'
 
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
@@ -19,6 +21,34 @@ import 'react-quill-new/dist/quill.snow.css'
 const { Option } = Select
 
 const Publish = () => {
+  // 获取频道列表
+  const [channelList, setChannelList] = useState([])
+  const getChannelList = async () => {
+    const res = await getChannelListAPI()
+    setChannelList(res.data.channels)
+  }
+
+  useEffect(() => {
+    getChannelList()
+  }, [])
+
+  // 收集form数据
+  const onFinish = (formData) => {
+    console.log(formData)
+    // 格式化数据
+    const { title, content, channel_id } = formData
+    const data = {
+      title,
+      content,
+      cover: {
+        type: 0,
+        images: []
+      },
+      channel_id
+    }
+    createArticleAPI(data)
+  }
+
   return (
     <div className="publish">
       <Card
@@ -34,6 +64,7 @@ const Publish = () => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1 }}
+          onFinish={onFinish}
         >
           <Form.Item
             label="标题"
@@ -48,20 +79,22 @@ const Publish = () => {
             rules={[{ required: true, message: '请选择文章频道' }]}
           >
             <Select placeholder="请选择文章频道" style={{ width: 400 }}>
-              <Option value={0}>推荐</Option>
+              {channelList.map(item => <Option key={item.id} value={item.id}>{item.name}</Option>)}
             </Select>
           </Form.Item>
           <Form.Item
             label="内容"
             name="content"
             rules={[{ required: true, message: '请输入文章内容' }]}
-          ></Form.Item>
+          >
+            <ReactQuill
+              className="publish-quill"
+              theme="snow"
+              placeholder="请输入文章内容"
+            />
+          </Form.Item>
 
-          <ReactQuill
-            className="publish-quill"
-            theme="snow"
-            placeholder="请输入文章内容"
-          />
+
 
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
