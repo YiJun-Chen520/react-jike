@@ -48,7 +48,7 @@ const Publish = () => {
       },
       channel_id
     }
-    // 发送请求
+    // 调用接口发送请求
     createArticleAPI(data)
   }
 
