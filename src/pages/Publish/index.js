@@ -46,6 +46,7 @@ const Publish = () => {
       },
       channel_id
     }
+    // 发送请求
     createArticleAPI(data)
   }
 
