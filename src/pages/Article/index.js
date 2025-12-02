@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select } from 'antd'
+import { Card, Breadcrumb, Form, Button, Radio, DatePicker, Select, Popconfirm } from 'antd'
 import locale from 'antd/es/date-picker/locale/zh_CN'
 
 import { Table, Tag, Space } from 'antd'
@@ -8,7 +8,7 @@ import img404 from '@/assets/error.png'
 import { useChannel } from '@/hooks/useChannel'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { getArticleListAPI } from '@/apis/article'
+import { deleteArticleAPI, getArticleListAPI } from '@/apis/article'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
@@ -61,12 +61,20 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="请确认是否删除"
+              description="Are you sure to delete this task?"
+              onConfirm={() => onConfirm(data)}
+              okText="是"
+              cancelText="否"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         )
       }
@@ -134,6 +142,16 @@ const Article = () => {
       page
     })
 
+  }
+
+  //删除操作
+  const onConfirm = async (data) => {
+    console.log('点击删除了')
+    await deleteArticleAPI(data.id)
+    // 更新列表
+    setFormData({
+      ...formData
+    })
   }
 
   return (

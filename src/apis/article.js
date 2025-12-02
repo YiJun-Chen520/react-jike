@@ -25,3 +25,11 @@ export function getArticleListAPI(params) {
     params
   })
 }
+
+// 删除功能
+export function deleteArticleAPI(id) {
+  return request({
+    url: `/mp/articles/${id}`,
+    method: 'DELETE'
+  })
+}
