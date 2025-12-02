@@ -10,6 +10,7 @@ export function getChannelListAPI() {
   })
 }
 
+// 新增文章
 export function createArticleAPI(data) {
   return request({
     url: '/mp/articles?draft=false',
@@ -18,6 +19,7 @@ export function createArticleAPI(data) {
   })
 }
 
+// 获取文章列表
 export function getArticleListAPI(params) {
   return request({
     url: '/mp/articles',
@@ -39,5 +41,14 @@ export function getArticleDetailAPI(id) {
   return request({
     url: `/mp/articles/${id}`,
     method: 'GET'
+  })
+}
+
+// 更新文章
+export function updateArticleAPI(data) {
+  return request({
+    url: `/mp/articles/${data.id}?draft=false`,
+    method: 'PUT',
+    data
   })
 }

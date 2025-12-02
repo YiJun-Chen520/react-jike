@@ -11,10 +11,10 @@ import {
   message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import { useEffect, useState } from 'react'
-import { getChannelListAPI, createArticleAPI, getArticleDetailAPI } from '@/apis/article'
+import { getChannelListAPI, createArticleAPI, getArticleDetailAPI, updateArticleAPI } from '@/apis/article'
 
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
@@ -26,8 +26,10 @@ const Publish = () => {
   // 获取频道列表
   const { channelList } = useChannel()
 
+  const navigate = useNavigate()
+
   // 收集form数据
-  const onFinish = (formData) => {
+  const onFinish = async (formData) => {
     if (imageList.length !== type) return message.warning('上传图片数量与类型不符')
     console.log(formData)
     // 格式化数据
@@ -37,12 +39,28 @@ const Publish = () => {
       content,
       cover: {
         type,
-        images: imageList.map(item => item.response.data.url)
+        images: imageList.map(item => {
+          if (item.response) {
+            return item.response.data.url
+          } else {
+            return item.url
+          }
+        })
       },
       channel_id
     }
     // 调用接口发送请求
-    createArticleAPI(data)
+    if (id) {
+      // id存在，调用编辑接口
+      await updateArticleAPI({ ...data, id })
+      message.success('编辑文章成功')
+      navigate('/article')
+    } else {
+      // id不存在，调用创建接口
+      await createArticleAPI(data)
+      message.success('发布文章成功')
+      navigate('/article')
+    }
   }
 
   // 上传回调图片
@@ -78,7 +96,9 @@ const Publish = () => {
         return { url }
       }))
     }
-    getArticleDetail()
+    if (id) {
+      getArticleDetail()
+    }
   }, [form, id])
 
   return (
@@ -87,7 +107,7 @@ const Publish = () => {
         title={
           <Breadcrumb items={[
             { title: <Link to={'/'}>首页</Link> },
-            { title: '发布文章' },
+            { title: `${id ? '编辑' : '发布'}文章` },
           ]}
           />
         }
