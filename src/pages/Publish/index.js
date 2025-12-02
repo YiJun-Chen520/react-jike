@@ -11,10 +11,10 @@ import {
   message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import { useEffect, useState } from 'react'
-import { getChannelListAPI, createArticleAPI } from '@/apis/article'
+import { getChannelListAPI, createArticleAPI, getArticleDetailAPI } from '@/apis/article'
 
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
@@ -59,6 +59,28 @@ const Publish = () => {
     setType(value.target.value)
   }
 
+  // 数据回显
+  const [searchParams] = useSearchParams()
+  const id = searchParams.get('id')
+  const [form] = Form.useForm() // 创建form实例
+  useEffect(() => {
+    console.log(id)
+    async function getArticleDetail() {
+      const res = await getArticleDetailAPI(id)
+      const data = res.data
+      form.setFieldsValue({
+        ...data,
+        type: data.cover.type,
+
+      })
+      setType(data.cover.type)
+      setImageList(data.cover.images.map(url => {
+        return { url }
+      }))
+    }
+    getArticleDetail()
+  }, [form, id])
+
   return (
     <div className="publish">
       <Card
@@ -75,6 +97,7 @@ const Publish = () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ type: type }}
           onFinish={onFinish}
+          form={form} // 绑定form实例
         >
           <Form.Item
             label="标题"
@@ -108,6 +131,7 @@ const Publish = () => {
                 name="image"
                 onChange={onChange}
                 maxCount={type}
+                fileList={imageList}
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />
