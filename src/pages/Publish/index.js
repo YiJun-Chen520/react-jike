@@ -14,24 +14,17 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import './index.scss'
 import { useEffect, useState } from 'react'
-import { getChannelListAPI, createArticleAPI } from '@/apis/publish'
+import { getChannelListAPI, createArticleAPI } from '@/apis/article'
 
 import ReactQuill from 'react-quill-new'
 import 'react-quill-new/dist/quill.snow.css'
+import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
 
 const Publish = () => {
   // 获取频道列表
-  const [channelList, setChannelList] = useState([])
-  const getChannelList = async () => {
-    const res = await getChannelListAPI()
-    setChannelList(res.data.channels)
-  }
-
-  useEffect(() => {
-    getChannelList()
-  }, [])
+  const { channelList } = useChannel()
 
   // 收集form数据
   const onFinish = (formData) => {
