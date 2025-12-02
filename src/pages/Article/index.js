@@ -125,6 +125,16 @@ const Article = () => {
     })
   }
 
+  // 实现分页功能
+  const onPageChange = (page) => {
+    console.log(page)
+    // 更新筛选数据
+    setFormData({
+      ...formData,
+      page
+    })
+
+  }
 
   return (
     <div>
@@ -175,7 +185,12 @@ const Article = () => {
       </Card>
       {/* 表格信息 */}
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={articleList} />
+        <Table rowKey="id" columns={columns} dataSource={articleList}
+          pagination={{
+            total: count,
+            pageSize: formData.per_page || 10,
+            onChange: onPageChange
+          }} />
       </Card>
     </div>
   )
