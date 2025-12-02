@@ -28,7 +28,7 @@ const Publish = () => {
 
   // 收集form数据
   const onFinish = (formData) => {
-    if (channelList.length !== type) return message.warning('上传图片数量与类型不符')
+    if (imageList.length !== type) return message.warning('上传图片数量与类型不符')
     console.log(formData)
     // 格式化数据
     const { title, content, channel_id } = formData
